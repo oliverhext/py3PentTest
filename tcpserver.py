@@ -2,6 +2,7 @@ import os
 import socket
 #  Test if its running netstat -antp | grep 8080
 #  on windows netstat -ano
+#  The tcp client should be run on linux only
 
 def transfer(conn, command):
         conn.send(command.encode())
