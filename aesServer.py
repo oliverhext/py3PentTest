@@ -75,9 +75,11 @@ def connect():
             plaintext=command
             
             plaintext = Padding.appendPadding(plaintext,blocksize=Padding.AES_blocksize,mode=0)
+            print("The plain text with padding added",plaintext)
             #print ("Input data (CMS): "+binascii.hexlify(plaintext.encode()).decode())
 
             ciphertext = encrypt(plaintext.encode(),key,AES.MODE_ECB)
+            print("The command encrypted",ciphertext)
             #ciphertext = binascii.hexlify(bytearray(ciphertext)).decode()
             #print("Cipher TExt",ciphertext)
             #conn.send(command.encode())

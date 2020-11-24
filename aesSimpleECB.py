@@ -31,6 +31,8 @@ print("Cipher TExt",ciphertext)
 #print ("Cipher (ECB): "+binascii.hexlify(bytearray(ciphertext)).decode())
 
 plaintext = decrypt(ciphertext,key,AES.MODE_ECB)
+print("Before we remove the padding",plaintext)
+
 plaintext = Padding.removePadding(plaintext.decode(),mode=0)
 print ("  decrypt: "+plaintext)
 

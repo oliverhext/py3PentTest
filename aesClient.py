@@ -55,6 +55,7 @@ def connect():
             print("Decypting command")
             plaintext = command
             plaintext = decrypt(ciphertext,key,AES.MODE_ECB)
+            print("The plain text raw but decrypted",plaintext)
             plaintext = Padding.removePadding(plaintext.decode(),mode=0)
             #print ("  decrypt: "+plaintext)
             
