@@ -1,14 +1,14 @@
-# py3PentTest
+# An assortment of Python scripts for Pentesting
 
-# 
-# /^-----^\
-# V  x o  V
-#  |  Y  |
-#   \ Q /
-#   / - \
-#   |    \
-#   |     \  OED-JL
-#   || (___\====
+ 
+ /^-----^\
+ V  x o  V
+  |  Y  |
+   \ Q /
+   / - \
+   |    \
+   |     \  OED-JL
+   || (___\====
 
 #  Example scripts
 
