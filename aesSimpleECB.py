@@ -5,7 +5,7 @@ import sys
 import binascii
 import Padding
 
-command='hello'
+command='whoami'
 password='hello'
 #ival=10
 
