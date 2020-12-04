@@ -27,7 +27,7 @@ YOU MUST INSTALL USING THE CMDLINE OF WINDOWS
 pip3 install pyinstaller
 
 If you get file cant be on windows check the PATH
-C:\Users\ojhext\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts
+C:\Users\<user>\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts
 
 
 -F - Create with dependancies
