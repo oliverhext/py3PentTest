@@ -40,7 +40,7 @@ You can do in in the Terminal to create a linux executable or cmd line for windo
 
 pyinstaller -F -w client.py
 
-# Alternative make of exe using cx_Freeze
+# Alternative make of exe using cx_Freeze (THIS VERSION AVOID AV DETECTION BETTER)
 
 pip install cx_Freeze
 
