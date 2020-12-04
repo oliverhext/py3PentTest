@@ -11,6 +11,9 @@
    || (___\====
    
    ```
+# Modules
+pip install pycryptodome
+pip install Padding
 
 #  Example scripts
 
@@ -36,6 +39,12 @@ C:\Users\<user>\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n
 You can do in in the Terminal to create a linux executable or cmd line for windows
 
 pyinstaller -F -w client.py
+
+# Alternative make of exe using cx_Freeze
+
+pip install cx_Freeze
+
+
 
 # Start a simple HTTP Server
 python3 -m http.server 8888
