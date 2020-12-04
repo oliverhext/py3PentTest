@@ -30,9 +30,9 @@ YOU MUST INSTALL USING THE CMDLINE OF WINDOWS
 pip3 install pyinstaller
 
 If you get file cant be on windows check the PATH
-C:\Users\<user>\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts
+ie add c:\python3
 
-
+pyinstaller
 -F - Create with dependancies
 -w - no console
 
@@ -46,6 +46,8 @@ pip install cx_Freeze
 
 
 python setup.py build
+
+Check the build directory
 
 
 # Start a simple HTTP Server
