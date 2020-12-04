@@ -45,6 +45,8 @@ pyinstaller -F -w client.py
 pip install cx_Freeze
 
 
+python setup.py build
+
 
 # Start a simple HTTP Server
 python3 -m http.server 8888
