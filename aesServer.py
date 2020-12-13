@@ -32,7 +32,8 @@ def connect():
     print("[+] - Attempting to connect to server connection...")
     s = socket.socket()
     #s.bind(("10.174.15.6", 8080))
-    s.bind(("192.168.1.183", 8080))
+    #s.bind(("192.168.1.183", 8080))
+    s.bind(("213.205.198.3", 8080))
     s.listen(1)
     conn, addr = s.accept()
 
