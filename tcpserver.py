@@ -33,7 +33,7 @@ def transfer(conn, command):
 def connect():
         print("[+] - Attempting to connect to server connection...")
         s = socket.socket()
-        s.bind(("192.168.1.183", 8080))
+        s.bind(("0.0.0.0", 9001))
         s.listen(1)
         conn, addr = s.accept()
         

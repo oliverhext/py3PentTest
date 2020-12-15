@@ -38,6 +38,10 @@ pyinstaller
 
 You can do in in the Terminal to create a linux executable or cmd line for windows
 
+pyinstaller --onefile client.py
+
+It this save the file in the dist directory
+
 pyinstaller -F -w client.py
 
 # Alternative make of exe using cx_Freeze (THIS VERSION AVOIDS AV DETECTION BETTER)

