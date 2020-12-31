@@ -49,7 +49,8 @@ pyinstaller -F -w client.py
 pip install cx_Freeze
 
 Amend the setup.py file to include the python script you wish to make the exe file
-python setup.py build
+
+``python setup.py build``
 
 Check the build directory
 
