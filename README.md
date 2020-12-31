@@ -50,6 +50,8 @@ pip install cx_Freeze
 
 Amend the setup.py file to include the python script you wish to make the exe file
 
+From the WINDOWS COMMAND LINE TO BUILD AN EXW
+
 ``python setup.py build``
 
 Check the build directory
