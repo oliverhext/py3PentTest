@@ -63,3 +63,9 @@ python setup.py bdist_msi
 
 # Start a simple HTTP Server
 python3 -m http.server 8888
+
+# Secure copy of files
+scp /mnt/c/github/py3PentTest/dist/reverse-1.0-amd64.msi root@<IP ADDRESS>:/home/simpleHTTPWebserver
+
+
+
